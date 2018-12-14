@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>数组中的逆序对</title>
+</head>
+<body>
+    <p>时间复杂度: O(nlogn)</p>
+    <p>思路:在归并排序的归并步骤 sum++ </p>
+</body>
+<script>
+    function InversePairs(data) {
+            var sum = 0;
+            function merge(a, b) {
+                let i = 0, j = 0
+                var r = []
+                while (i < a.length && j < b.length) {
+                    if (a[i] <= b[j]) {
+                        r.push(a[i++])
+                        sum += j
+                    }
+                    else {
+                        r.push(b[j++])
+                    }
+                }
+                if (i < a.length) {
+                    r.push(...a.slice(i))
+                    sum += (a.length - i) * j
+                }
+                if (j < b.length) {
+                    r.push(...b.slice(j))
+                }
+                return r
+            }
+            function count(a) {
+                if (a.length > 1) {
+                    let l = parseInt(a.length / 2)
+                    var m = count(a.slice(0, l))
+                    var n = count(a.slice(l))
+                    return merge(m, n)
+                }
+                if (a.length == 1) {
+                    return a
+                }
+            }
+            count(data)
+            return sum % 1000000007
+    }
+</script>
+
+</html>
