@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/highlight.js/9.13.0/styles/atom-one-dark-reasonable.min.css" rel="stylesheet">
     <title>数组中的逆序对</title>
 </head>
 <body>
+    <h2>数组中的逆序对</h2>
+    <p>
+    在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。 即输出P%1000000007</p>
     <p>时间复杂度: O(nlogn)</p>
     <p>思路:在归并排序的归并步骤 sum++ </p>
+    <a href="https://www.nowcoder.com/questionTerminal/96bd6684e04a44eb80e6a68efc0ec6c5">原题目链接</a>
+    <pre><code id="code" class="js"></code></pre>
 </body>
 <script>
     function InversePairs(data) {
@@ -49,5 +55,9 @@
             return sum % 1000000007
     }
 </script>
-
+<script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+<script>
+    document.querySelector("code").innerText = document.querySelector("script").innerText
+    hljs.initHighlightingOnLoad();
+</script>
 </html>
