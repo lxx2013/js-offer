@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +8,19 @@
     <link href="https://cdn.bootcss.com/highlight.js/9.13.0/styles/atom-one-dark-reasonable.min.css" rel="stylesheet">
     <title>旋转数组的最小数字</title>
 </head>
+
 <body>
     <h2>旋转数组的最小数字</h2>
     <p>
-    把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。
-    NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</p>
+        把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。
+        NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</p>
     <p>时间复杂度: O(logn)</p>
     <p>思路:二分查找 </p>
     <pre>
         <code id="markdown" class="md">
 ## 首先,a[0] >= a[a.length-1]是绝对成立的,否则就是原数组,直接返回 a[0] 即可
 
-#### 若 a[0] < a[m], 则选择后半部分, 即 slice(m+1)
+#### 若 a[m] < a[m], 则选择后半部分, 即 slice(m+1)
                   ---------
             6   7 | o 4   |
                   ---------
@@ -26,6 +28,7 @@
                  ------- 
             6  6 | o 4 | 
                  -------
+     错!!! ,例如 [10,1,10,10,10] 则应选择前半部分
 #### 若 a[0] > a[m], 则选择前半部分
            --------- 
            | 6 o 3  | 4  
@@ -36,30 +39,27 @@
     <pre><code id="code" class="js"></code></pre>
 </body>
 <script>
-    console.log(minNumberInRotateArray([6501, 6828, 6963, 7036, 7422, 7674, 8146, 8468, 8704, 8717, 9170, 9359, 9719, 9895, 9896, 9913, 9962, 154,154, 293,334, 334, 492, 1323, 1479, 1539, 1727, 1870, 1943, 2383, 2392, 2996, 3282, 3812, 3903, 4465, 4605, 4665, 4772, 4828, 5142, 5437, 5448, 5668, 5706, 5725, 6300, 6335]))
+    console.log(findMin([6501, 6828, 6963, 7036, 7422, 7674, 8146, 8468, 8704, 8717, 9170, 9359, 9719, 9895, 9896, 9913, 9962, 154, 154, 293, 334, 334, 492, 1323, 1479, 1539, 1727, 1870, 1943, 2383, 2392, 2996, 3282, 3812, 3903, 4465, 4605, 4665, 4772, 4828, 5142, 5437, 5448, 5668, 5706, 5725, 6300, 6335]))
     //下面测试用例考虑有元素相等的情况
-    console.log(minNumberInRotateArray([6,1,2,3,4,5,6])) //a[0] == a[a.length-1]
-    console.log(minNumberInRotateArray([6,6,6,6,4]))     //a[0] == a[m]
+    console.log(findMin([6, 1, 2, 3, 4, 5, 6])) //a[0] == a[a.length-1]
+    console.log(findMin([6, 6, 6, 6, 4]))     //a[0] == a[m]
 
-    function minNumberInRotateArray(a) {
-            console.log(a.join(','), '\n')
+    function findMin(a) {
+            //二分查找
             if (a.length == 0) {
-                return 0
+                return 0;
             }
-            if(a.length == 1) return a[0]
-            if(a.length == 2) return a[0] <= a[1] ? a[0]:a[1]
-            if (a[0] < a[a.length - 1]) {
-                return a[0]
-            }
-            else {
-                var m = parseInt(a.length / 2)
-                if (a[0] <= a[m]) {
-                    return minNumberInRotateArray(a.slice(m + 1))
-                }
-                else {
-                    return minNumberInRotateArray(a.slice(0, m + 1))
+            if (a[0] < a[a.length - 1]) return a[0]
+            var l = 0, r = a.length - 1;
+            while (l < r) {
+                var m = (l + r) >> 1;
+                if (a[l] > a[m]) {
+                    r = m
+                } else {
+                    l = m + 1
                 }
             }
+            return a[l];
         }
 </script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
@@ -67,4 +67,5 @@
     document.querySelector("#code").innerText = document.querySelector("script").innerText
     hljs.initHighlightingOnLoad();
 </script>
+
 </html>
