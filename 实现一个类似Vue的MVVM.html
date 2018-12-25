@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/highlight.js/9.13.0/styles/atom-one-dark-reasonable.min.css" rel="stylesheet">
+    <title>简单实现一个类似 Vue 的 MVVM</title>
+</head>
+
+<body>
+    <h2>简单实现一个类似 Vue 的 MVVM</h2>
+    <a href="https://div.io/topic/1890">参考链接</a>
+    <p>输入如下类 Vue 的 code , 能做到数据动态绑定和刷新</p>
+    <div class="flex" style="display:flex;">
+        <div class="left" style="width: 50%">
+            
+            <pre><code id="html" class="html">
+            </code></pre>
+
+            <pre><code id="code" class="js"></code></pre>
+        </div>
+        <div class="right" style="float:right">
+            demo: https://cn.vuejs.org/v2/examples/todomvc.html
+        </div>
+    </div>
+
+
+</body>
+<script>
+    /*
+     * 仿 Vue 的简单 MVVM 结构实现
+    */
+    function MVVM(options) {
+
+    }
+</script>
+
+<script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+<script>
+    document.querySelector("#code").innerText = document.querySelector("script").innerText
+    hljs.initHighlightingOnLoad()
+</script>
+
+<script>
+    document.querySelector('#html').innerText = `
+<div id="root">
+    <h1>{{title}}</h1>
+    <input v-model="message" >
+    <button @click="add">
+    <div>
+        <div v-model="user"></div>
+        <ul v-list="todos">
+            <li v-for="item in todos" :class="item.done">
+                <p v-model="item.date"></p>
+                <p v-model="item.content"></p>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+let data = {
+  title: 'todo list',
+  user: 'lxx',
+  todos: [
+    {
+      creator: 'lxx',
+      content: 'write mvvm'
+      done: 'undone',
+      date: '2018-12-25',
+    },
+    {
+      creator: 'lxx',
+      content: 'write mvvm2'
+      done: 'undone',
+      date: '2018-12-26',
+    }
+  ]
+}
+new MVVM({
+    el: '#root',
+    data: data,
+    methods:{
+        add : function(){
+            //...
+        }
+    }
+})
+<\/script>
+`
+</script>
+
+</html>
