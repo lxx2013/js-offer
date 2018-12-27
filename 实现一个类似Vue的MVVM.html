@@ -14,21 +14,12 @@
     <a href="https://div.io/topic/1890">参考链接</a>
     <p>输入如下类 Vue 的 code , 能做到数据动态绑定和刷新</p>
     <div id="app2">
-        <h2>MVVM Todos:</h2>
+        <h2>{{title}}</h2>
         <input v-model="input" type="text">
         <button @click="add">add</button>
         <ol>
             <li v-for="todo in todos">
-                <label>
-                    <input type="checkbox" v-on:change="toggle(todo)" v-bind:checked="todo.done">
-
-                    <del v-if="todo.done">
-                        {{ todo.text }}
-                    </del>
-                    <span v-else>
-                        {{ todo.text }}
-                    </span>
-                </label>
+                {{ todo.text }}
             </li>
         </ol>
     </div>
@@ -53,6 +44,7 @@
         el: "#app2",
         data: {
             input: '',
+            title: 'MVVM Todos:',
             todos: [
                 { text: "Learn JavaScript", done: false },
                 { text: "Learn MVVM", done: false },
@@ -72,36 +64,139 @@
      * 仿 Vue 的简单 MVVM 结构实现
     */
     function MVVM(options) {
-        Object.assign(this,options);
+        var vm = parseOption(this, options);
+
         scan(document.querySelector(options.el))
+
+        function parseOption(vm, options) {
+            vm.el = options.el
+            Object.defineProperties(vm, {
+                '_data': {
+                    enumerable: false,
+                    configurable: true,
+                    value: options.data
+                },
+                '_methods': {
+                    enumerable: false,
+                    configurable: true,
+                    value: options.methods
+                }
+            })
+            for (let i in vm._data) {
+                vm[i] = vm._data[i]
+            }
+            for (let i in vm._methods) {
+                vm[i] = vm._methods[i]
+            }
+            return vm
+        }
+        function observe(obj, k, callback) {
+            let old = obj[k]
+            if (old instanceof Array) {
+                observeArray(old, callback)
+            }
+            else {
+                Object.defineProperty(obj, k, {
+                    enumerable: true,
+                    configurable: true,
+                    get: function () {
+                        return old
+                    },
+                    set: function (now) {
+                        if (now !== old) {
+                            callback(old, now)
+                        }
+                        old = now
+                    }
+                }
+                )
+            }
+
+            function observeArray(arr, callback) {
+                const oam = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse']
+                const hackProto = Object.create(Array.prototype)
+                oam.forEach(function (method) {
+                    Object.defineProperty(hackProto, method, {
+                        writable: true,
+                        enumerable: true,
+                        configurable: true,
+                        value: function () {
+                            let old = this.slice()
+                            let now = Array.prototype[method].apply(this, arguments)
+                            callback(old, this)
+                            return now
+                        }
+                    })
+                })
+                arr.__proto__ = hackProto
+            }
+        }
         function scan(node) {
             if (!node.getAttribute('v-for')) {
                 for (let i of node.children) {
-                    if (i.children.length) {
+                    if (!(i.isDirty))
                         scan(i)
-                    }
-                    parseEvent(i)
                 }
+                parseEvent(node)
+                parseModel(node)
+                parseData(node)
             } else {
                 parseList(node)
             }
             function parseModel(node) {
-                //TODO:解析v-model节点
+                let m = node.getAttribute('v-model')
+                if (m) {
+                    node.onchange = () => { vm[m] = node.value }
+                    observe(vm, m, (old, now) => { node.value = now })
+                }
             }
-            function parseData(node) {
-                //TODO:解析 {{ data }}
-            }
-            function parseClass(node) {
-                //TODO:解析className
+            function parseData(node, m) {
+                if (node.children.length > 0) return
+                if (/.*{{(.*)}}.*/.test(node.innerText)) {
+                    let m = RegExp.$1.trim()
+                    node.innerText = vm[m]
+                    if (m.length == 1)
+                        observe(vm, m, (old, now) => { node.innerText = now })
+                }
             }
             function parseEvent(node) {
                 let f = node.getAttribute('@click')
                 if (f) {
-                    node.addEventListener('click', options.methods[f].bind(this))
+                    node.addEventListener('click', vm[f].bind(vm))
                 }
             }
             function parseList(node) {
-                //TODO: 解析列表
+                //const _item = parseListItem(node)
+                const _list = node.getAttribute('v-for');
+                /(.*)in(.*)/.test(_list);
+                let m = RegExp.$2.trim(), n = RegExp.$1.trim()
+                observe(vm, m, () => renderList(node))
+                renderList(node)
+
+                function renderList(node) {
+                    var childs = node.parentNode.children
+                    for (var i = 0; i < childs.length; i++) {
+                        if (childs[i].isDirty) { node.parentNode.removeChild(childs[i]); i-- }
+                    }
+                    for (var i of vm[m]) {
+                        let cloneNode = node.cloneNode(true)
+                        cloneNode.removeAttribute('v-for');
+                        /{{(.*)}}/.test(cloneNode.innerText)
+                        let keyL = RegExp.$1.split('.').map(x => x.trim())
+                        if (keyL.length == 1) {
+                            cloneNode.innerText = i
+                        } else {
+                            var o = {}; Object.assign(o, i)
+                            for (let k = 1; k < keyL.length; k++) {
+                                o = o[keyL[k]]
+                            }
+                            cloneNode.innerText = o
+                            cloneNode.isDirty = true
+                        }
+                        node.parentNode.appendChild(cloneNode)
+                    }
+
+                }
             }
         }
     }
