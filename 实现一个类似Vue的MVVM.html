@@ -13,27 +13,97 @@
     <h2>简单实现一个类似 Vue 的 MVVM</h2>
     <a href="https://div.io/topic/1890">参考链接</a>
     <p>输入如下类 Vue 的 code , 能做到数据动态绑定和刷新</p>
-    <div class="flex" style="display:flex;">
-        <div class="left" style="width: 50%">
-            
+    <div id="app2">
+        <h2>MVVM Todos:</h2>
+        <input v-model="input" type="text">
+        <button @click="add">add</button>
+        <ol>
+            <li v-for="todo in todos">
+                <label>
+                    <input type="checkbox" v-on:change="toggle(todo)" v-bind:checked="todo.done">
+
+                    <del v-if="todo.done">
+                        {{ todo.text }}
+                    </del>
+                    <span v-else>
+                        {{ todo.text }}
+                    </span>
+                </label>
+            </li>
+        </ol>
+    </div>
+    <div class="flex" style="display:flex;width:100%;flex-direction:row;justify-content: space-between;">
+        <div class="left" style="width:50%">
+
             <pre><code id="html" class="html">
             </code></pre>
 
             <pre><code id="code" class="js"></code></pre>
         </div>
-        <div class="right" style="float:right">
-            demo: https://cn.vuejs.org/v2/examples/todomvc.html
-        </div>
+        <!-- <div class="right" style="width:50%;min-height:40vw;margin:15px">
+            <iframe width="100%" height="800" src="//jsfiddle.net/lxx2013/31sz94wo/1/embedded/result,js,html,css/dark/"
+                allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+        </div> -->
     </div>
 
 
 </body>
 <script>
+    var app2 = new MVVM({
+        el: "#app2",
+        data: {
+            input: '',
+            todos: [
+                { text: "Learn JavaScript", done: false },
+                { text: "Learn MVVM", done: false },
+            ]
+        },
+        methods: {
+            toggle: function (todo) {
+                todo.done = !todo.done
+            },
+            add: function () {
+                this.todos.push({ text: this.input, done: false })
+                this.input = ''
+            }
+        }
+    })
     /*
      * 仿 Vue 的简单 MVVM 结构实现
     */
     function MVVM(options) {
-
+        Object.assign(this,options);
+        scan(document.querySelector(options.el))
+        function scan(node) {
+            if (!node.getAttribute('v-for')) {
+                for (let i of node.children) {
+                    if (i.children.length) {
+                        scan(i)
+                    }
+                    parseEvent(i)
+                }
+            } else {
+                parseList(node)
+            }
+            function parseModel(node) {
+                //TODO:解析v-model节点
+            }
+            function parseData(node) {
+                //TODO:解析 {{ data }}
+            }
+            function parseClass(node) {
+                //TODO:解析className
+            }
+            function parseEvent(node) {
+                let f = node.getAttribute('@click')
+                if (f) {
+                    node.addEventListener('click', options.methods[f].bind(this))
+                }
+            }
+            function parseList(node) {
+                //TODO: 解析列表
+            }
+        }
     }
 </script>
 
@@ -45,19 +115,26 @@
 
 <script>
     document.querySelector('#html').innerText = `
-<div id="root">
-    <h1>{{title}}</h1>
-    <input v-model="message" >
-    <button @click="add">
-    <div>
-        <div v-model="user"></div>
-        <ul v-list="todos">
-            <li v-for="item in todos" :class="item.done">
-                <p v-model="item.date"></p>
-                <p v-model="item.content"></p>
-            </li>
-        </ul>
-    </div>
+<div id="app2">
+  <h2>MVVM Todos:</h2>
+  <input v-model="input" type="text">
+  <button @click="add">add</button>
+  <ol>
+    <li v-for="todo in todos">
+      <label>
+        <input type="checkbox"
+          v-on:change="toggle(todo)"
+          v-bind:checked="todo.done">
+
+        <del v-if="todo.done">
+          {{ todo.text }}
+        </del>
+        <span v-else>
+          {{ todo.text }}
+        </span>
+      </label>
+    </li>
+  </ol>
 </div>
 <script>
 let data = {
@@ -79,13 +156,25 @@ let data = {
   ]
 }
 new MVVM({
-    el: '#root',
-    data: data,
-    methods:{
-        add : function(){
-            //...
-        }
+  el: "#app2",
+  data: {
+  	input: '',
+    todos: [
+      { text: "Learn JavaScript", done: false },
+      { text: "Learn MVVM", done: false },
+      { text: "Play around in JSFiddle", done: true },
+      { text: "Build something awesome", done: true }
+    ]
+  },
+  methods: {
+  	toggle: function(todo){
+    	todo.done = !todo.done
+    },
+    add: function(){
+    	this.todos.push({ text: this.input , done:false})
+      this.input = ''
     }
+  }
 })
 <\/script>
 `
