@@ -13,28 +13,28 @@
     <h2>简单实现一个类似 Vue 的 MVVM</h2>
     <a href="https://div.io/topic/1890">参考链接</a>
     <p>输入如下类 Vue 的 code , 能做到数据动态绑定和刷新</p>
-    <div id="app2">
-        <h2>{{title}}</h2>
-        <input v-model="input" type="text">
-        <button @click="add">add</button>
-        <ol>
-            <li v-for="todo in todos">
-                {{ todo.text }}
-            </li>
-        </ol>
-    </div>
+    <p>
+        该不到200行的MVVM目前的优点(已实现的部分):
+        <br>1. vm.input 数据到 vm._data 的动态绑定
+        <br>2. 遇到{{ text }} 时加上 observe 检测数据更新
+        <br>3. 遇到 v-for="todo in todos" 时进行列表渲染
+    </p>
+    <p>该不到200行的MVVM目前的缺点: 
+        <br> 1. data 更新时的 callback 直接重新绘制 dom node, 目前的局限性要求该 dom node 只有 innerText,无其它children
+        <br> 2. 一个 data 更新只能绑定一个 dom node 的视图更新, 当然也可以把 callback 串起来, 但还是使用 vnode 更好
+        <br> 3. Event 只识别了 click , 其它 @Event 需要对 node.attributes 进行正则表达式匹配
+        <br> 4. 虽然做到了 list 渲染, 但还是要求node 为单行结构, 过于简单, 对于 {{ text }} 紧跟 span 等情况未做
+        <br> 5. 综上, 感觉 vnode 是必不可少的, 同时需要引入两个 vnode 的对比更新算法, 需要继续阅读 Vue
+        <br> 6. v-model 绑定的也太简单, 只识别了 node.onchange 事件
+    </p>
     <div class="flex" style="display:flex;width:100%;flex-direction:row;justify-content: space-between;">
         <div class="left" style="width:50%">
-
-            <pre><code id="html" class="html">
-            </code></pre>
-
             <pre><code id="code" class="js"></code></pre>
         </div>
-        <!-- <div class="right" style="width:50%;min-height:40vw;margin:15px">
-            <iframe width="100%" height="800" src="//jsfiddle.net/lxx2013/31sz94wo/1/embedded/result,js,html,css/dark/"
+        <div class="right" style="width:50%;min-height:40vw;margin:15px">
+            <iframe width="100%" height="800" src="//jsfiddle.net/lxx2013/31sz94wo/15/embedded/result,js,html,css/dark/"
                 allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
-        </div> -->
+        </div>
     </div>
 
 
@@ -206,73 +206,6 @@
 <script>
     document.querySelector("#code").innerText = document.querySelector("script").innerText
     hljs.initHighlightingOnLoad()
-</script>
-
-<script>
-    document.querySelector('#html').innerText = `
-<div id="app2">
-  <h2>MVVM Todos:</h2>
-  <input v-model="input" type="text">
-  <button @click="add">add</button>
-  <ol>
-    <li v-for="todo in todos">
-      <label>
-        <input type="checkbox"
-          v-on:change="toggle(todo)"
-          v-bind:checked="todo.done">
-
-        <del v-if="todo.done">
-          {{ todo.text }}
-        </del>
-        <span v-else>
-          {{ todo.text }}
-        </span>
-      </label>
-    </li>
-  </ol>
-</div>
-<script>
-let data = {
-  title: 'todo list',
-  user: 'lxx',
-  todos: [
-    {
-      creator: 'lxx',
-      content: 'write mvvm'
-      done: 'undone',
-      date: '2018-12-25',
-    },
-    {
-      creator: 'lxx',
-      content: 'write mvvm2'
-      done: 'undone',
-      date: '2018-12-26',
-    }
-  ]
-}
-new MVVM({
-  el: "#app2",
-  data: {
-  	input: '',
-    todos: [
-      { text: "Learn JavaScript", done: false },
-      { text: "Learn MVVM", done: false },
-      { text: "Play around in JSFiddle", done: true },
-      { text: "Build something awesome", done: true }
-    ]
-  },
-  methods: {
-  	toggle: function(todo){
-    	todo.done = !todo.done
-    },
-    add: function(){
-    	this.todos.push({ text: this.input , done:false})
-      this.input = ''
-    }
-  }
-})
-<\/script>
-`
 </script>
 
 </html>
