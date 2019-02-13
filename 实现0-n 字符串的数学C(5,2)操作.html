@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/highlight.js/9.13.0/styles/atom-one-dark-reasonable.min.css" rel="stylesheet">
+    <title>实现0-n 字符串的数学C(5,2)操作</title>
+</head>
+
+<body>
+    <h2>实现0-n 字符串的数学C(5,2)枚举操作</h2>
+    <p>实现函数C(3,2)=["01","02","12"], 即数学中的 C 运算符的枚举,输入数据一般在13以内(可用于扑克牌判定顺子)</p>
+    <p>时间复杂度: 阶乘级 m!/n!/(m-n)! </p>
+    <p>思路: 把嵌套循环变成函数递归</p>
+    <pre><code id="code" class="js"></code></pre>
+</body>
+<script>
+    console.log(C(5, 1))        /* ["0", "1", "2", "3", "4"] */
+    console.log(C(5, 2))        /* ["01", "02", "03", "04", "12", "13", "14", "23", "24", "34"] */
+    console.log(C(5, 3))        /* ["012", "013", "014", "023", "024", "034", "123", "124", "134", "234"] */
+    function C(m,n){
+        var a= []
+        var o = [],path=[]
+        ;(function f(){
+            if(path.length < n){
+                for(let j=0;j<m;j++){
+                    if(path.length==0 || j>path[path.length-1]){
+                        path.push(j);
+                        f();
+                        path.pop()
+                    }
+                }
+
+            }else if(path.length == n){
+                let p = path.slice().sort((a,b)=>a-b)
+                o.push(p.join(''))
+            }
+        })()
+        return o
+    }
+</script>
+<script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+<script>
+    document.querySelector("code").innerText = document.querySelector("script").innerText
+    hljs.initHighlightingOnLoad();
+</script>
+
+</html>
