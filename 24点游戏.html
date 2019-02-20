@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>24点游戏-背包问题</title>
+</head>
+
+<body>
+    <h2>24点游戏-背包问题</h2>
+    <p>输入4个数字,输出加减乘除能组成24点的计算表达式</p>
+    <p>思路: 走背包问题的思路,构建[1,2]能拼成的数字集合,再构建[1,2,3]能拼成的数字集合,最后构建[1,2,3,4]能拼成的数字集合,从中过滤出等于24的</p>
+    <div class="flex" style="display:flex;width:100%;flex-direction:row;justify-content: space-between;">
+        <div class="right" style="width:90%;min-height:40vw;margin:15px">
+            <iframe width="100%" height="800" src="//jsfiddle.net/lxx2013/fbeLjp0c/12/embedded/result,js,html,css/dark/"
+                allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+        </div>
+    </div>
+
+
+</body>
+<script>
+//定义 空优先级为0, '+-' 优先级为-1, '*/'优先级为1 , 优先级存储在 op 字段
+
+/**
+ * 计算24点, 输入为4个数字,输出这4个数字能拼成24的路径,已按照从小到大排序的方式去重
+ * 如'(1+2)*(3+4)'和'(4+3)*(2+1)'视为重复,保留前者
+ */
+function get24(a) {
+    /*1个数字能组成的表达式*/
+    var d1 = a.map(x => { return { val: x, path: x + '', op: 0 } });
+    var d2 = {}, d3 = {}, d4 = []
+    console.log('d1:', d1)
+    /*2个数字能拼成的表达式*/
+    for (let k = 0; k < 4; k++) {
+        for (let j = k + 1; j < 4; j++) {
+            d2[k + ',' + j] = extend2(d1[k], d1[j])
+        }
+    }
+    console.log('d2:', d2)
+    /*3个数字能拼成的表达式*/
+    for (let k = 0; k < 4; k++) {
+        for (let j = k + 1; j < 4; j++) {
+            for (let l = j + 1; l < 4; l++) {
+                let s = k + ',' + j + ',' + l
+                d3[s] = []
+                d3[s] = d3[s].concat(extend2(d2[k + ',' + j], d1[l]))
+                d3[s] = d3[s].concat(extend2(d2[k + ',' + l], d1[j]))
+                d3[s] = d3[s].concat(extend2(d2[j + ',' + l], d1[k]))
+            }
+        }
+    }
+    console.log('d3:',d3)
+    /*4个数字能拼成的表达式*/
+    let arr = ['1,2,3', '0,2,3', '0,1,3', '0,1,2']
+    for(let i in arr){
+        d4 = d4.concat( extend2(d3[arr[i]],d1[i]) )
+    }
+    arr = [['0,1','2,3'],['0,2','1,3'],['0,3','1,2']]
+    for (let i of arr) {
+        d4 = d4.concat(extend2(d2[i[0]], d2[i[1]]))
+    }
+    console.log('d4:',d4)
+    /*过滤并输出结果*/
+    d4 =  d4.filter(x=>x.val==24).map(x=>`${x.path} = 24`)
+    return [...new Set(d4)]
+
+    /*向 m 集合中, 从 n 集合中选一个数字添加进去, 构建m+1集合*/
+    function extend2(m, n) {
+        var o = []
+        if (!(m instanceof Array)) m = [m]
+        if (!(n instanceof Array)) n = [n]
+        for (let a of m) {
+            for (let b of n) {
+                if (a.val - b.val >= 0) [a, b] = [b, a]
+                o.push({ val: a.val + b.val, path: `${a.path}+${b.path}`, op: -1 });
+                o.push({ val: b.val - a.val, path: a.op >= 0 ? `${b.path}-${a.path}` : `${b.path}-(${a.path})`, op: -1 });
+                if (b.val % a.val == 0) {
+                    let path1 = b.op >= 0 ? b.path : `(${b.path})`;
+                    let path2 = a.op == 0 ? a.path : `(${a.path})`;
+                    o.push({ val: b.val / a.val, path: `${path1}/${path2}`, op: 1 })
+                }
+                let path1 = a.op >= 0 ? a.path : `(${a.path})`
+                let path2 = b.op >= 0 ? b.path : `(${b.path})`
+                o.push({ val: a.val * b.val, path: `${path1}*${path2}`, op: 1 })
+            }
+        }
+        return o
+    }
+}
+</script>
+
+</html>
