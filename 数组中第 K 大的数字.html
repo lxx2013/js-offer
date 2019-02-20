@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    var randomArray = ()=>Array.from({length:20}).map((x,index)=>index).sort(()=>Math.random()-0.5)
+    var a = randomArray()
+    var b = randomArray()
+    console.log(K1(a,10));
+    console.log(K2(b,10));
+    function sort(a,l,r){
+        if(l<r){
+            let k = partition(a,l,r)
+            sort(a,l,k-1);
+            sort(a,k+1,r);
+        }
+    }
+    function partition(a,l,r){
+        let k = l, p = a[r];
+        for(let i = l; i<r; i++){
+            if(a[i] <= p){
+                [a[k],a[i]] = [a[i],a[k]];
+                k++;
+            }
+        }
+        [a[k],a[r]] = [a[r],a[k]]
+        return k
+    }
+    function K1(a,k){
+        sort(a,0,a.length-1);
+        return a[a.length-k];
+    }
+    function K2(a,k){
+        console.log(a);
+        return search(a,0,a.length-1);
+        function search(a,l,r){
+            let p = partition(a,l,r)
+            console.log(a.slice(0,p).join(),' '+a[p]+' ',a.slice(p+1,r+1).join(),a.slice(r+1).join())
+            if(k-1 == p){
+                return a[p]
+            }
+            if(p<k-1){
+                return search(a,p+1,r)
+            }else{
+                return search(a,l,p-1)
+            }
+        }
+        function partition(a,l,r){
+            let k = l, p = a[r];
+            for(let i = l; i<r; i++){
+                if(a[i] >= p){
+                    [a[k],a[i]] = [a[i],a[k]];
+                    k++;
+                }
+            }
+            [a[k],a[r]] = [a[r],a[k]]
+            return k
+        }
+    }
+</script>
+</html>
