@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.bootcss.com/highlight.js/9.13.0/styles/atom-one-dark-reasonable.min.css" rel="stylesheet">
     <title>简单实现一个类似 Vue 的 MVVM</title>
 </head>
 
@@ -28,11 +27,8 @@
         <br> 6. v-model 绑定的也太简单, 只识别了 node.onchange 事件
     </p>
     <div class="flex" style="display:flex;width:100%;flex-direction:row;justify-content: space-between;">
-        <div class="left" style="width:50%">
-            <pre><code id="code" class="js"></code></pre>
-        </div>
-        <div class="right" style="width:50%;min-height:40vw;margin:15px">
-            <iframe width="100%" height="800" src="//jsfiddle.net/lxx2013/31sz94wo/15/embedded/result,js,html,css/dark/"
+        <div class="right" style="width:80%;min-height:1000px;margin:15px">
+            <iframe width="100%" height="1200" src="//jsfiddle.net/lxx2013/31sz94wo/15/embedded/result,js,html,css/dark/"
                 allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
         </div>
     </div>
@@ -40,26 +36,6 @@
 
 </body>
 <script>
-    var app2 = new MVVM({
-        el: "#app2",
-        data: {
-            input: '',
-            title: 'MVVM Todos:',
-            todos: [
-                { text: "Learn JavaScript", done: false },
-                { text: "Learn MVVM", done: false },
-            ]
-        },
-        methods: {
-            toggle: function (todo) {
-                todo.done = !todo.done
-            },
-            add: function () {
-                this.todos.push({ text: this.input, done: false })
-                this.input = ''
-            }
-        }
-    })
     /*
      * 仿 Vue 的简单 MVVM 结构实现
     */
@@ -202,10 +178,5 @@
     }
 </script>
 
-<script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
-<script>
-    document.querySelector("#code").innerText = document.querySelector("script").innerText
-    hljs.initHighlightingOnLoad()
-</script>
 
 </html>

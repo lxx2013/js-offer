@@ -1,68 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>数组中第 K 大的数字</title>
 </head>
+
 <body>
-    
+    <h2>数组中第 K 大的数字</h2>
+    <a href="https://segmentfault.com/a/1190000008322873">参考链接</a>
+    <a href="https://www.jianshu.com/p/cb32fb7407e7#3.2_%E6%89%8B%E6%92%B8%E5%BF%AB%E6%8E%92=%3E%E5%BF%AB%E9%80%9F%E6%90%9C%E7%B4%A2%E7%AC%AC_K_%E5%A4%A7%E6%95%B0%E5%AD%97">我的简书文章</a>
+    <p>头条笔试题:给定一个数组和 K,求出第 K 大的数字,要求按照快排的思路来写</p>
+    <p>思路: 快排移动一次后, 递归调用时剪枝就行了.</p>
+    <p>难点: 不允许使用 javascript 或其他语言的默认 sort 函数时, 要自己手动实现快排中的 partition 函数,说白了考察点还是在手撸快排算法.</p>
 </body>
 <script>
-    var randomArray = ()=>Array.from({length:20}).map((x,index)=>index).sort(()=>Math.random()-0.5)
+    var randomArray = () => Array.from({ length: 20 }).map((x, index) => index).sort(() => Math.random() - 0.5)
     var a = randomArray()
     var b = randomArray()
-    console.log(K1(a,10));
-    console.log(K2(b,10));
-    function sort(a,l,r){
-        if(l<r){
-            let k = partition(a,l,r)
-            sort(a,l,k-1);
-            sort(a,k+1,r);
+    console.log(K1(a, 10));
+    console.log(K2(b, 10));
+    function sort(a, l, r) {
+        if (l < r) {
+            let k = partition(a, l, r)
+            sort(a, l, k - 1);
+            sort(a, k + 1, r);
         }
     }
-    function partition(a,l,r){
+    function partition(a, l, r) {
         let k = l, p = a[r];
-        for(let i = l; i<r; i++){
-            if(a[i] <= p){
-                [a[k],a[i]] = [a[i],a[k]];
+        for (let i = l; i < r; i++) {
+            if (a[i] <= p) {
+                [a[k], a[i]] = [a[i], a[k]];
                 k++;
             }
         }
-        [a[k],a[r]] = [a[r],a[k]]
+        [a[k], a[r]] = [a[r], a[k]]
         return k
     }
-    function K1(a,k){
-        sort(a,0,a.length-1);
-        return a[a.length-k];
+    function K1(a, k) {
+        sort(a, 0, a.length - 1);
+        return a[a.length - k];
     }
-    function K2(a,k){
+    function K2(a, k) {
         console.log(a);
-        return search(a,0,a.length-1);
-        function search(a,l,r){
-            let p = partition(a,l,r)
-            console.log(a.slice(0,p).join(),' '+a[p]+' ',a.slice(p+1,r+1).join(),a.slice(r+1).join())
-            if(k-1 == p){
+        return search(a, 0, a.length - 1);
+        function search(a, l, r) {
+            let p = partition(a, l, r)
+            console.log(a.slice(0, p).join(), ' ' + a[p] + ' ', a.slice(p + 1, r + 1).join(), a.slice(r + 1).join())
+            if (k - 1 == p) {
                 return a[p]
             }
-            if(p<k-1){
-                return search(a,p+1,r)
-            }else{
-                return search(a,l,p-1)
+            if (p < k - 1) {
+                return search(a, p + 1, r)
+            } else {
+                return search(a, l, p - 1)
             }
         }
-        function partition(a,l,r){
+        function partition(a, l, r) {
             let k = l, p = a[r];
-            for(let i = l; i<r; i++){
-                if(a[i] >= p){
-                    [a[k],a[i]] = [a[i],a[k]];
+            for (let i = l; i < r; i++) {
+                if (a[i] >= p) {
+                    [a[k], a[i]] = [a[i], a[k]];
                     k++;
                 }
             }
-            [a[k],a[r]] = [a[r],a[k]]
+            [a[k], a[r]] = [a[r], a[k]]
             return k
         }
     }
 </script>
+
 </html>
