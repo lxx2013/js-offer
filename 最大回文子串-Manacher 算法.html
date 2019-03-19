@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>最大回文子串- Manacher 算法</title>
+</head>
+
+<body>
+    <h1>最大回文子串- Manacher 算法</h1>
+    <a href="https://leetcode-cn.com/explore/interview/card/tencent/221/array-and-strings/896/">leetcode</a>
+    <p>题目描述：输入一个字符串,返回其中的最长回文子串.普通遍历是 O(n^2) ,能否尝试O(n)?</p>
+        <pre><code>
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var longestPalindrome = function(s) {
+    s = '$' + s.replace(/(\w)/g,'#$1')+'#'
+    var resRadius = 0, resCenter = 0
+    var maxRight = 0, maxCenter = 0
+    var p = []
+    for(var i=1; i<s.length;i++){
+        var  symmetry_i = 2*maxCenter - i // because (symmetry_i + i) == 2*maxCenter
+        p[i] = maxRight > i? Math.min(p[symmetry_i],maxRight-i) : 1
+        while(s[i+p[i]] == s[i-p[i]]) p[i]++ 
+        if(resRadius<p[i]){
+            resRadius = p[i];
+            resCenter = i;
+        }
+        if(maxRight < i+p[i]){
+            maxRight = i+p[i]
+            maxCenter = i
+            if(maxRight == s.length) 
+                break;
+        }
+    }
+    return s.slice(resCenter-resRadius+1,resCenter+resRadius).replace(/[$#]/g,'')
+};
+        </code></pre>
+    </p>
+    <p>算法思想: 维护 p[] 和 maxRight, 其中 p[i] 保存了以 i 为中心的回文串的半径, 此时可以想象该回文串以 i 为中心, 向左边伸出了左手, 向右边伸出了
+    右手, 那么 maxRight 就标记了该右手最远能伸到多远. 然后遍历至下一个 k 时,若k仍在 i 的右手范围内, 
+    则可以取 k 相对于 i 的对称点p[2*k-i]的值来作为 p[k] 的初始值
+    </p>
+    <p>参考了<a href="http://www.cnblogs.com/grandyang/p/4475985.html">博客园</a></p>
+</body>
+<style>
+    .img{
+        display:block;
+        width: 600px;
+        margin-left: 50px;
+    }
+</style>
+</html>
