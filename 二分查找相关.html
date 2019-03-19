@@ -1,4 +1,43 @@
-[1, 0, -1, 9, 7, 5, -2, 4]
-6
-[1, 5]
-给定一个整数数组和目标值，找到和为目标值的两个元素。
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>二分查找相关</title>
+</head>
+<body>
+     <p>二分查找相关</p>
+     <p>
+    1. 给定一个整数数组和目标值，找到和为目标值的两个元素。</p>
+    <pre><code>
+输入[1, 0, -1, 9, 7, 5, -2, 4],6
+输出[1,5]
+    </code></pre>
+    <p>思路: 控制左右各一个指针, 根据两个位置数字和和 target 的比较来移动指针, O(n)</p>
+    <pre><code>
+        function search(a,target){
+            a.sort((x,y)=>x-y);
+            var l = 0, r = a.length-1;
+            while(l < r){
+                if(a[l] + a[r] < target) l++;
+                else if(a[l] + a[r] == target) return [a[l],a[r]];
+                else if(a[l] + a[r] >target) r--;
+            }
+            return []
+        }
+    </code></pre>
+</body>
+<script>
+function search(a,k){
+    a.sort((x,y)=>x-y);
+    var l = 0, r = a.length-1;
+    while(l<r){
+        if(a[l] + a[r] < k) l++;
+        else if(a[l] + a[r] == k) return [a[l],a[r]];
+        else if(a[l] + a[r] >k) r--;
+    }
+    return []
+}
+</script>
+</html>

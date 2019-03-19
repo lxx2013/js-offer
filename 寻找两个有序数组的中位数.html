@@ -21,10 +21,10 @@
     <a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/">原题目链接</a>
     <pre><code id="code" class="js"></code></pre>
 </body>
-<script>
-    console.log(findMedianSortedArrays([], [1]))        //1
-    console.log(findMedianSortedArrays([1], [2, 3]))   //2
-    console.log(findMedianSortedArrays([1, 2], [3, 4]))//2.5
+<script id="js-code">
+    console.log(findMedianSortedArrays([], [1]));        /* 1 */
+    console.log(findMedianSortedArrays([1], [2, 3]))    /* 2.5 */
+    console.log(findMedianSortedArrays([1, 2], [3, 4]))/* 2.5 */
 
     /**
      * @param {number[]} nums1
@@ -32,7 +32,7 @@
      * @return {number}
      */
     function findMedianSortedArrays(nums1, nums2) {
-        var n, m //n 为较长的数组,m 为较短的数组
+        var n, m /* n 为较长的数组,m 为较短的数组 */
         if (nums1.length > nums2.length) {
             n = nums1
             m = nums2
@@ -41,23 +41,23 @@
             m = nums1
             n = nums2
         }
-        var flag = 0 //如果两个数组长度和为奇数,则在长数组尾巴复制一个元素,并标记该 flag 为1
+        var flag = 0 /* 如果两个数组长度和为奇数,则在长数组尾巴复制一个元素,并标记该 flag 为1 */
         if ((n.length + m.length) % 2 != 0) {
             flag = 1
             n.push(n[n.length - 1])
         }
-        var i, j, min_r, max_l                   // right 部分最小值和 left 部分最大值
-        var i_min = 0, i_max = m.length          // 二分查找时 i 的上下界
+        var i, j, min_r, max_l                   /*  right 部分最小值和 left 部分最大值 */
+        var i_min = 0, i_max = m.length          /*  二分查找时 i 的上下界 */
         
         while (i_min <= i_max) {
             i = parseInt((i_min + i_max) / 2)
             j = (n.length + m.length) / 2 - i
 
-            var case1 = LE(m[i - 1], n[j]) && LE(n[j - 1], m[i])//be able to return 
+            var case1 = LE(m[i - 1], n[j]) && LE(n[j - 1], m[i])/* be able to return  */
 
-            var case2 = n[j - 1] > m[i]//need to move right
+            var case2 = n[j - 1] > m[i]/* need to move right */
 
-            var case3 = i > 0 && m[i - 1] > n[j]//need to move left
+            var case3 = i > 0 && m[i - 1] > n[j]/* need to move left */
 
             if (case1) {
                 min_r = min(m[i], n[j])
@@ -95,7 +95,7 @@
 </script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
 <script>
-    document.querySelector("code").innerText = document.querySelector("script").innerText
+    document.querySelector("code").innerText = document.querySelector("#js-code").innerText
     hljs.initHighlightingOnLoad();
 </script>
 
